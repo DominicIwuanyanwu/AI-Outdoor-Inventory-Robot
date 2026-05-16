@@ -41,3 +41,96 @@ Python, ROS 2 Humble, OpenCV, ONNX Runtime, pyzbar, Gazebo, SLAM Toolbox, Nav2
    cd physical_robot/ros2_ws
    colcon build
    source install/setup.bash
+
+   
+---
+
+## 2. `physical_robot/README.md`
+
+```markdown
+# Physical Robot
+
+Real hardware implementation. Raspberry Pi handles perception and decision-making; Arduino handles motor control.
+
+## Nodes
+| Node | File | Purpose |
+|------|------|---------|
+| Camera Scan | `inventory_project/scan_store_onnx.py` or similar | Captures frames, runs ONNX inference, decodes barcodes, updates CSV |
+| Obstacle Avoid | `inventory_project/obstacle_avoid_node.py` | Reads ultrasonic distance, publishes stop/slow commands |
+| Serial Bridge | `inventory_project/serial_bridge_node.py` | Converts ROS 2 `/cmd_vel` to serial strings for Arduino |
+
+## How it runs
+1. Arduino flashed with firmware from `../arduino/robot_firmware/`
+2. Pi camera enabled (`sudo raspi-config`)
+3. Start ROS 2 nodes:
+   ```bash
+   ros2 run inventory_robot camera_scan
+   ros2 run inventory_robot serial_bridge
+   ros2 run inventory_robot obstacle_avoid
+
+   
+---
+
+## 3. `simulation/README.md`
+
+```markdown
+# Simulation Environment
+
+ROS 2 + Gazebo + Nav2 for autonomous navigation demonstration.
+
+## What's inside
+- `inventory_sim/` — Gazebo world, robot URDF/Xacro, LiDAR plugin
+- SLAM Toolbox for mapping
+- Nav2 for path planning and goal navigation
+
+## Launch
+```bash
+ros2 launch inventory_sim simulation.launch.py
+ros2 launch inventory_sim nav2.launch.py
+
+
+---
+
+## 4. `arduino/README.md`
+
+```markdown
+# Arduino Firmware
+
+Low-level motor control and sensor reading for the Elegoo/Arduino chassis.
+
+## Files
+- `robot_firmware/motor_controller_serial.ino` — main sketch
+
+## What it does
+- Listens for serial commands from Raspberry Pi
+- Drives L298N motor driver based on left/right speed values
+- Reads HC-SR04 ultrasonic sensor
+- Sends distance readings back to Pi
+
+## Pinout (adjust to your wiring)
+| Component | Arduino Pin |
+|-----------|-------------|
+| Motor A IN1 | 2 |
+| Motor A IN2 | 3 |
+| Motor A EN | 5 (PWM) |
+| Motor B IN1 | 4 |
+| Motor B IN2 | 7 |
+| Motor B EN | 6 (PWM) |
+| HC-SR04 Trig | 8 |
+| HC-SR04 Echo | 9 |
+
+## Serial Baud Rate
+9600 (match this in the Pi's serial bridge node)
+
+# Model Training
+
+`BarcodeTrainedModel.ipynb` — Jupyter notebook for training the barcode detection model.
+
+## Pipeline
+1. Dataset preparation (barcode images from `../docs/images/`)
+2. YOLO training
+3. Export to ONNX format (`best.onnx`)
+4. Validation metrics
+
+## Output
+Place the exported `best.onnx` in `../models/` before running the physical robot.
