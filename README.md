@@ -47,7 +47,7 @@ Python, ROS 2 Humble, OpenCV, ONNX Runtime, pyzbar, Gazebo, SLAM Toolbox, Nav2
 
 ## 2. `physical_robot/README.md`
 
-```markdown
+
 # Physical Robot
 
 Real hardware implementation. Raspberry Pi handles perception and decision-making; Arduino handles motor control.
@@ -73,7 +73,7 @@ Real hardware implementation. Raspberry Pi handles perception and decision-makin
 
 ## 3. `simulation/README.md`
 
-```markdown
+
 # Simulation Environment
 
 ROS 2 + Gazebo + Nav2 for autonomous navigation demonstration.
@@ -84,7 +84,7 @@ ROS 2 + Gazebo + Nav2 for autonomous navigation demonstration.
 - Nav2 for path planning and goal navigation
 
 ## Launch
-```bash
+
 ros2 launch inventory_sim simulation.launch.py
 ros2 launch inventory_sim nav2.launch.py
 
@@ -93,7 +93,6 @@ ros2 launch inventory_sim nav2.launch.py
 
 ## 4. `arduino/README.md`
 
-```markdown
 # Arduino Firmware
 
 Low-level motor control and sensor reading for the Elegoo/Arduino chassis.
